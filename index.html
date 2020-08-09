@@ -67,7 +67,7 @@
         <div class="text">
             <p>已有<span id="num">_</span>人次膜叶</p>
             <p>MOYE!</p>
-            <small class="text-sm">Ver 1.0</small>
+            <small class="text-sm">Ver 1.1</small>
         </div>
     </div>
 </div>
@@ -76,7 +76,7 @@
         let gun = Gun('https://gunjs.herokuapp.com/gun');
         let sf = gun.get('sf_num_v1');
         let moye = gun.get('moye_num_v1');
-        let num = -1;
+        let num = -1,moyeNum = -1;
         let numSpan = document.getElementById('num');
         let divCenter = document.querySelector('.center');
         let divPlusOne = document.createElement('div');
@@ -84,14 +84,17 @@
         divCenter.prepend(divPlusOne);
         divPlusOne.classList.add('circle');
         let timer = (new Date()).getTime();
-        moye.on(function (data, key) {
+        sf.on(function (data, key) {
             num = data.num;
+        });
+        moye.on(function (data, key) {
+            moyeNum = data.num;
             numSpan.innerText = data.num;
         });
         divPlusOne.addEventListener('click', e => {
             let clickTime = (new Date()).getTime();
-            if (e && e.isTrusted && num > -1 && clickTime - timer > 80) {
-                moye.put({num: num - (-1)});
+            if (e && e.isTrusted && moyeNum > -1 && clickTime - timer > 80) {
+                moye.put({num: moyeNum - (-1)});
                 sf.put({num: num - (-5)});
                 timer = (new Date()).getTime();
             } else alert('膜叶也需要虔诚!');
