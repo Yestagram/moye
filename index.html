@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>叶神全球膜拜总会</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            display: flex;
+            align-items: center;
+            background: #efefef;
+        }
+
+        .center {
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .circle {
+            border-radius: 50%;
+            background: #ff4141;
+            display: inline-block;
+            width: 250px;
+            height: 250px;
+            line-height: 250px;
+            text-align: center;
+            font-size: 32px;
+            font-weight: bold;
+            color: white;
+            box-shadow: #555555 1px 1px 30px;
+            user-select: none;
+            transition: all 0.3s;
+        }
+
+        .circle:active {
+            background: #e83e3e;
+            box-shadow: #555555 1px 1px 15px;
+        }
+
+        .text {
+            user-select: none;
+            margin-top: 64px;
+            color: #555555;
+            font-size: 24px;
+        }
+
+        .text-sm {
+            font-size: 12px;
+            font-weight: 100;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/gun/gun.js"></script>
+</head>
+<body>
+<div class="container">
+    <div class="center">
+        <div class="text">
+            <p>已有<span id="num">_</span>人次膜叶</p>
+            <p>MOYE!</p>
+            <small class="text-sm">Ver 1.0</small>
+        </div>
+    </div>
+</div>
+<script>
+    (function () {
+        let gun = Gun('https://gunjs.herokuapp.com/gun');
+        let sf = gun.get('sf_num_v1');
+        let moye = gun.get('moye_num_v1');
+        let num = -1;
+        let numSpan = document.getElementById('num');
+        let divCenter = document.querySelector('.center');
+        let divPlusOne = document.createElement('div');
+        divPlusOne.innerText = '膜叶!';
+        divCenter.prepend(divPlusOne);
+        divPlusOne.classList.add('circle');
+        let timer = (new Date()).getTime();
+        sf.on(function (data, key) {
+            num = data.num;
+            numSpan.innerText = data.num;
+        });
+        divPlusOne.addEventListener('click', e => {
+            let clickTime = (new Date()).getTime();
+            if (e && e.isTrusted && num > -1 && clickTime - timer > 80) {
+                moye.put({num: num - (-1)});
+                sf.put({num: num - (-5)});
+                timer = (new Date()).getTime();
+            } else alert('膜叶也需要虔诚!');
+        });
+    })();
+</script>
+</body>
+</html>
